@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 화니를 위한 응원 페이지 💖</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 귀여운 'Gaegu' 폰트 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 'Gaegu' 폰트를 기본 폰트로 설정 */
+        body {
+            font-family: 'Gaegu', cursive;
+        }
+    </style>
+</head>
+<body class="bg-pink-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- 메인 카드 -->
+    <div class="bg-white w-full max-w-md p-8 rounded-3xl shadow-lg text-center border-4 border-pink-200">
+
+        <!-- 상단 꾸미기 -->
+        <div class="text-4xl mb-4">✨💖✨</div>
+
+        <!-- 제목 -->
+        <h1 class="text-3xl font-bold text-pink-500 mb-4">
+            세상 최고 우리 <span class="text-pink-600">화니</span>를 위한
+        </h1>
+
+        <!-- 워니의 응원 메시지 (고정) -->
+        <div class="bg-pink-50 p-6 rounded-2xl shadow-inner">
+            <p class="text-xl text-gray-800 leading-relaxed">
+                "사랑하는 화니! 💝<br>
+                오늘 하루도 정말 고생 많았어!
+                지칠 땐 워니 생각하면서 한 번 더 웃기!
+                워니가 항상 곁에서 응원하고 있어!
+                우리 화니 최고! 🥰"
+            </p>
+            <p class="text-right text-lg text-pink-400 mt-4">- 너의 짝꿍 워니가 -</p>
+        </div>
+
+        <!-- 오늘의 운세 섹션 (수정됨) -->
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold text-yellow-600 mb-4">🍀 워니가 뽑아주는 오늘의 행운 🍀</h2>
+            <p class="text-gray-600 mb-5">워니가 화니를 위해 정성껏 뽑았어! 💖<br>아래 버튼을 눌러 확인해봐!</p>
+
+            <!-- 운세 뽑기 버튼 (수정됨) -->
+            <button id="fortune-btn" class="bg-yellow-400 text-yellow-900 font-bold text-lg py-3 px-8 rounded-full shadow-md transition-all duration-300 transform hover:bg-yellow-500 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-yellow-300">
+                오늘의 운세 확인하기 💝
+            </button>
+
+            <!-- 운세 결과가 표시될 곳 (수정됨) -->
+            <div id="fortune-display" class="hidden mt-6 bg-yellow-50 p-5 rounded-2xl text-left border-2 border-dashed border-yellow-300 space-y-4">
+                <!-- 자바스크립트로 내용 채움 -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const fortuneButton = document.getElementById('fortune-btn');
+        const fortuneDisplay = document.getElementById('fortune-display');
+
+        // 워니의 따뜻한 한마디 목록 (추가)
+        const warmMessages = [
+            "우리 화니, 오늘 하루도 으쌰! 💖",
+            "내가 세상에서 제일 많이 응원하는 거 알지? 🥰",
+            "화니 생각하면서 나도 힘낼게! 우리 같이 파이팅! 💪",
+            "오늘도 최고로 멋진 내 남편! 💝",
+            "이따가 꼬옥 안아줄게! >_<",
+            "세상에서 젤루 사랑해! 쪽! 😚"
+        ];
+
+        // 귀여운 운세 메시지 목록
+        const fortunes = [
+            "✨ 반짝반짝! 오늘은 화니가 주인공이 되는 날! 모든 시선이 화니에게! 💖",
+            "🥰 생각지도 못한 사람에게 칭찬을 듬뿍 받을 거예요! (워니일지도? ㅋ_ㅋ)",
+            "🍓 오늘따라 유난히 더 멋져 보일 거예요! 워니 심쿵 주의보! 🚨",
+            "💪 에너지가 뿜뿜! 평소에 어려웠던 일도 오늘은 쉽게 해결! 얍!",
+            "💌 사랑의 기운이 가득! 워니의 사랑을 듬뿍 받고 최고의 하루가 될 거예요!",
+            "🍀 길 가다가 100원을 주울지도 모르는 소소한 행운이 가득한 날!",
+            "🎶 콧노래가 절로 나오는 즐거운 일이 생길 거예요! 덩실덩실~",
+            "☕️ 따뜻한 커피 한 잔처럼, 주변 사람들에게 훈훈함을 전파하게 될 거예요.",
+            "🎁 오늘 저녁엔 맛있는 치킨이 화니를 기다리고 있을 것 같은 기분!"
+        ];
+
+        // 버튼 클릭 이벤트 (수정됨)
+        fortuneButton.addEventListener('click', () => {
+            // 1. 버튼 비활성화 및 로딩 메시지
+            fortuneButton.disabled = true;
+            fortuneButton.textContent = '두근두근... 🌀';
+            fortuneDisplay.classList.remove('hidden');
+            // 로딩 메시지 수정
+            fortuneDisplay.innerHTML = `<p class="text-center text-gray-600">워니가 정성껏 고르는 중... 💌</p>`;
+
+            // 2. 잠시 후 결과 표시 (더 설레게!)
+            setTimeout(() => {
+                // 3. 랜덤 메시지 및 운세 뽑기
+                const warmIndex = Math.floor(Math.random() * warmMessages.length);
+                const randomWarmMessage = warmMessages[warmIndex];
+
+                const fortuneIndex = Math.floor(Math.random() * fortunes.length);
+                const randomFortune = fortunes[fortuneIndex];
+
+                // 4. 운세 표시 (innerHTML로 두 가지 내용 표시)
+                fortuneDisplay.innerHTML = `
+                    <div>
+                        <p class="text-lg text-pink-500 font-bold mb-2">💖 워니의 한마디 💖</p>
+                        <p class="text-xl text-gray-800">${randomWarmMessage}</p>
+                    </div>
+                    <div>
+                        <p class="text-lg text-yellow-700 font-bold mb-2">🍀 오늘의 행운 🍀</p>
+                        <p class="text-xl text-gray-800">${randomFortune}</p>
+                    </div>
+                `;
+
+                // 5. 버튼 다시 활성화
+                fortuneButton.disabled = false;
+                fortuneButton.textContent = '한번 더 확인할래? 🤩';
+            }, 1200); // 1.2초 딜레이
+        });
+    </script>
+
+</body>
+</html>
