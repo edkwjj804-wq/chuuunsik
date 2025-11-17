@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 워니의 사랑가득 가족 운세 💖</title>
+    <!-- Tailwind CSS 로드 --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- 귀여운 'Gaegu' 폰트 로드 --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 'Gaegu' 폰트를 기본 폰트로 설정 */
+        body {
+            font-family: 'Gaegu', cursive;
+        }
+        /* Tailwind JIT가 동적 클래스를 인식하도록 (안전장치) */
+        .ring-pink-400, .bg-pink-400, .hover:bg-pink-500,
+        .ring-blue-400, .bg-blue-400, .hover:bg-blue-500,
+        .ring-yellow-400, .bg-yellow-400, .hover:bg-yellow-500 {}
+    </style>
+</head>
+<body class="bg-pink-50 min-h-screen flex items-center justify-center p-4">
+
+    <!-- 메인 카드 --><div class="bg-white w-full max-w-md p-8 rounded-3xl shadow-lg text-center border-4 border-pink-200">
+
+        <!-- 제목 --><h1 class="text-4xl font-bold text-pink-500 mb-6">
+            💖 워니가 뽑아주는 💖<br>우리 가족 행운!
+        </h1>
+
+        <!-- 가족 선택 섹션 --><div class="mb-8">
+            <h2 class="text-2xl text-gray-700 mb-4">누구의 운세를 뽑아볼까?</h2>
+            <div class="flex justify-center space-x-3">
+                <!-- 엄마 버튼 --><button class="family-btn p-4 rounded-2xl shadow-md transition-all transform hover:scale-110 border-2 border-gray-200 bg-gray-100" data-member="mom" data-name="엄마" data-color="pink">
+                    <span class="text-4xl">👩</span>
+                    <span class="block text-xl font-bold text-pink-600 mt-1">엄마</span>
+                </button>
+                <!-- 아빠 버튼 --><button class="family-btn p-4 rounded-2xl shadow-md transition-all transform hover:scale-110 border-2 border-gray-200 bg-gray-100" data-member="dad" data-name="아빠" data-color="blue">
+                    <span class="text-4xl">👨</span>
+                    <span class="block text-xl font-bold text-blue-600 mt-1">아빠</span>
+                </button>
+                <!-- 남동생 버튼 (아이콘 변경) --><button class="family-btn p-4 rounded-2xl shadow-md transition-all transform hover:scale-110 border-2 border-gray-200 bg-gray-100" data-member="sibling" data-name="남동생" data-color="yellow">
+                    <span class="text-4xl">👦</span> <!-- 👧 -> 👦으로 변경 --><span class="block text-xl font-bold text-yellow-600 mt-1">남동생</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 운세 뽑기 버튼 --><button id="fortune-btn" class="w-full bg-gray-300 text-white font-bold text-xl py-4 px-8 rounded-full shadow-md transition-all duration-300" disabled>
+            먼저 가족을 선택해줘!
+        </button>
+
+        <!-- 운세 결과가 표시될 곳 --><div id="fortune-display" class="hidden mt-6 bg-yellow-50 p-5 rounded-2xl text-left border-2 border-dashed border-yellow-300 space-y-4">
+            <!-- 자바스크립트로 내용 채움 --></div>
+
+    </div>
+
+    <script>
+        const familyButtons = document.querySelectorAll('.family-btn');
+        const fortuneButton = document.getElementById('fortune-btn');
+        const fortuneDisplay = document.getElementById('fortune-display');
+        
+        let selectedMember = null;
+
+        // 워니의 따뜻한 한마디 (가족별)
+        const warmMessages = {
+            mom: [
+                "엄마! 오늘 하루도 힘내! 내가 응원할게! 💖",
+                "세상에서 제일 예쁜 우리 엄마, 사랑해! 🥰",
+                "엄마가 최고야! 오늘 맛있는 거 먹자! 🍓",
+                "엄마~ 오늘 저녁엔 워니랑 꼭 안기! >.<"
+            ],
+            dad: [
+                "아빠! 세상에서 제일 멋져! 💙",
+                "우리 아빠 파이팅! 내가 항상 응원해! 💪",
+                "아빠~ 오늘 칼퇴근하고 워니랑 놀아주기! 😋",
+                "아빠 최고! 오늘 하루도 으쌰으쌰!"
+            ],
+            sibling: [ // 남동생 메시지로 변경
+                "내 남동생~ 오늘 하루도 즐겁게! 💛",
+                "우리 사이좋게 지내자! 🤝",
+                "까불지 말고 (ㅋ) 오늘 하루도 파이팅! 😜",
+                "이따가 맛있는 거 같이 먹자! 🍰"
+            ]
+        };
+
+        // 귀여운 운세 메시지 목록 (공통)
+        const fortunes = [
+            "✨ 반짝반짝! 오늘은 주인공이 되는 날! 모든 시선 집중! 💖",
+            "🥰 생각지도 못한 사람에게 칭찬을 듬뿍 받을 거예요!",
+            "🍓 오늘따라 유난히 더 멋져 보일 거예요! 매력 폭발! 🚨",
+            "💪 에너지가 뿜뿜! 평소에 어려웠던 일도 오늘은 쉽게 해결! 얍!",
+            "💌 사랑의 기운이 가득! 주변 사람들의 사랑을 듬뿍 받는 날!",
+            "🍀 길 가다가 100원을 주울지도 모르는 소소한 행운이 가득!",
+            "🎶 콧노래가 절로 나오는 즐거운 일이 생길 거예요! 덩실덩실~",
+            "🎁 오늘 저녁엔 맛있는 치킨이 기다리고 있을 것 같은 기분!"
+        ];
+
+        // 1. 가족 버튼 클릭 이벤트
+        familyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 모든 버튼의 선택 효과(테두리) 제거
+                familyButtons.forEach(b => b.classList.remove('ring-4', 'ring-pink-400', 'ring-blue-400', 'ring-yellow-400'));
+                
+                // 클릭한 버튼에서 정보 가져오기
+                const id = btn.dataset.member;
+                const name = btn.dataset.name;
+                const color = btn.dataset.color; // 'pink', 'blue', 'yellow'
+                
+                // 선택 정보 저장
+                selectedMember = { id, name, color };
+                
+                // 클릭한 버튼에 선택 효과(테두리) 추가
+                btn.classList.add('ring-4', `ring-${color}-400`);
+                
+                // 메인 '운세 뽑기' 버튼 활성화 및 꾸미기
+                fortuneButton.disabled = false;
+                fortuneButton.textContent = `${name} 운세 뽑아주기! 💝`;
+                // 기존 색상 클래스 모두 제거 후 새 색상 적용
+                fortuneButton.classList.remove('bg-gray-300', 'bg-pink-400', 'bg-blue-400', 'bg-yellow-400', 'hover:bg-pink-500', 'hover:bg-blue-500', 'hover:bg-yellow-500');
+                fortuneButton.classList.add(`bg-${color}-400`, `hover:bg-${color}-500`);
+            });
+        });
+
+        // 2. 운세 뽑기 버튼 클릭 이벤트
+        fortuneButton.addEventListener('click', () => {
+            if (!selectedMember) return; // 선택된 가족이 없으면 실행 안 함
+
+            // 1. 버튼 비활성화 및 로딩 메시지
+            fortuneButton.disabled = true;
+            fortuneButton.textContent = `${selectedMember.name} 운세 뽑는 중... 🌀`;
+            fortuneDisplay.classList.remove('hidden');
+            fortuneDisplay.innerHTML = `<p class="text-center text-gray-600">워니가 정성껏 고르는 중... 💌</p>`;
+
+            // 2. 잠시 후 결과 표시
+            setTimeout(() => {
+                // 3. 랜덤 메시지 및 운세 뽑기
+                const warmMsgArray = warmMessages[selectedMember.id];
+                const warmIndex = Math.floor(Math.random() * warmMsgArray.length);
+                const randomWarmMessage = warmMsgArray[warmIndex];
+
+                const fortuneIndex = Math.floor(Math.random() * fortunes.length);
+                const randomFortune = fortunes[fortuneIndex];
+
+                // 4. 운세 표시 (innerHTML로 두 가지 내용 표시)
+                fortuneDisplay.innerHTML = `
+                    <div>
+                        <p class="text-lg text-pink-500 font-bold mb-2">💖 워니의 한마디 💖</p>
+                        <p class="text-xl text-gray-800">${randomWarmMessage}</p>
+                    </div>
+                    <div>
+                        <p class="text-lg text-yellow-700 font-bold mb-2">🍀 ${selectedMember.name}의 오늘의 행운 🍀</p>
+                        <p class="text-xl text-gray-800">${randomFortune}</p>
+                    </div>
+                `;
+
+                // 5. 버튼 다시 활성화
+                fortuneButton.disabled = false;
+                fortuneButton.textContent = `다른 가족 운세도 뽑아주기! 🤩`;
+            }, 1200); // 1.2초 딜레이
+        });
+    </script>
+
+</body>
+</html>
